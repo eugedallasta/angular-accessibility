@@ -1,20 +1,7 @@
-/**
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+
 
 export interface ColorDialogData {
   color: string;
@@ -44,7 +31,10 @@ export class ColorPickerDialogComponent implements OnInit {
   ];
 
   // TODO: #11. Announce changes with LiveAnnouncer
-  constructor(public dialogRef: MatDialogRef<ColorPickerDialogComponent>) { }
+  constructor(
+    public dialogRef: MatDialogRef<ColorPickerDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ColorDialogData,
+    private liveAnnouncer: LiveAnnouncer) { }
 
   ngOnInit(): void { }
 
@@ -52,8 +42,8 @@ export class ColorPickerDialogComponent implements OnInit {
     if (color) {
       this.recolor.emit(color);
     }
-
     // TODO: #11. Announce changes with LiveAnnouncer
+    this.liveAnnouncer.announce(`Select color: ${color}`);
     this.dialogRef.close();
   }
 
